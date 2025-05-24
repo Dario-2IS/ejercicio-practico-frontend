@@ -1,0 +1,24 @@
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.layout-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+app-menu {
+  flex: 0 0 200px; /* ancho fijo para el menú */
+  border-right: 1px solid #e0e0e0;
+  background-color: #fff;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: #fafafa;
+}

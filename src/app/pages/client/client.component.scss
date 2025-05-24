@@ -1,0 +1,80 @@
+.clients-container {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff;
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.new-button {
+  background-color: #ffd700;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.new-button:hover {
+  background-color: #ffcc00;
+}
+
+.search-box {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+th, td {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background-color: #f3f3f3;
+}
+
+button {
+  border: none;
+  background: none;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 0.3rem;
+  transition: transform 0.1s ease;
+}
+
+button:hover {
+  transform: scale(1.2);
+}
+
+.table-row.empty {
+  text-align: center;
+  grid-column: span 3;
+  color: #888;
+}

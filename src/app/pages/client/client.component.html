@@ -1,0 +1,48 @@
+<div class="clients-container">
+    <div class="header">
+        <h1>Clientes</h1>
+        <button class="new-button">Nuevo</button>
+    </div>
+
+    <input type="text" class="search-box" placeholder="Buscar" [(ngModel)]="searchTerm" />
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Identificación</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Género</th>
+                    <th>Edad</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Contraseña</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let client of filteredClients">
+                    <td>{{ client.identification }}</td>
+                    <td>{{ client.firstName }}</td>
+                    <td>{{ client.lastName }}</td>
+                    <td>{{ client.gender ? 'Masculino' : 'Femenino' }}</td>
+                    <td>{{ client.age }}</td>
+                    <td>{{ client.phoneNumber }}</td>
+                    <td>{{ client.address }}</td>
+                    <td>{{ client.password }}</td>
+                    <td>{{ client.state ? 'Activo' : 'Inactivo' }}</td>
+                    <td>
+                        <button (click)="editClient(client)" title="Editar">✏️</button>
+                        <button (click)="deleteClient(client)" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="table-row empty" *ngIf="filteredClients.length === 0">
+            No se encontraron clientes.
+        </div>
+    </div>
+</div>
