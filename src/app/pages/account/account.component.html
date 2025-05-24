@@ -1,0 +1,42 @@
+<div class="clients-container">
+    <div class="header">
+        <h1>Cuentas</h1>
+        <button class="new-button">Nuevo</button>
+    </div>
+
+    <input type="text" class="search-box" placeholder="Buscar" [(ngModel)]="searchTerm" />
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Numero de Cuenta</th>
+                    <th>Tipo</th>
+                    <th>Saldo</th>
+                    <th>Moneda</th>
+                    <th>Estado</th>
+                    <th>Id. Cliente</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let account of filteredAccounts">
+                    <td>{{ account.accountNumber }}</td>
+                    <td>{{ account.accountType }}</td>
+                    <td>{{ account.balance }}</td>
+                    <td>{{ account.currency }}</td>
+                    <td>{{ account.state ? 'Activo' : 'Inactivo' }}</td>
+                    <td>{{ account.clientId }}</td>
+                    <td>
+                        <button (click)="editAccount(account)" title="Editar">✏️</button>
+                        <button (click)="deleteAccount(account)" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="table-row empty" *ngIf="filteredAccounts.length === 0">
+            No se encontraron cuentas.
+        </div>
+    </div>
+</div>
