@@ -1,0 +1,48 @@
+<div class="clients-container">
+    <div class="header">
+        <h1>Movimientos</h1>
+        <button class="new-button">Nuevo</button>
+    </div>
+
+    <input type="text" class="search-box" placeholder="Buscar" [(ngModel)]="searchTerm" />
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Tipo</th>
+                    <th>Monto</th>
+                    <th>Saldo Inicial</th>
+                    <th>Saldo Final</th>
+                    <th>Moneda</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Id. Cuenta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tx of filteredTransactions">
+                    <td>{{ tx.id }}</td>
+                    <td>{{ tx.transactionType }}</td>
+                    <td>{{ tx.amount | currency: 'USD' }}</td>
+                    <td>{{ tx.initialBalance | currency: 'USD' }}</td>
+                    <td>{{ tx.finalBalance | currency: 'USD' }}</td>
+                    <td>{{ tx.currency }}</td>
+                    <td>{{ tx.date }}</td>
+                    <td>{{ tx.time }}</td>
+                    <td>{{ tx.accountId }}</td>
+                    <td>
+                        <button (click)="editTransaction(tx)" title="Editar">✏️</button>
+                        <button (click)="deleteTransaction(tx)" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="table-row empty" *ngIf="filteredTransactions.length === 0">
+            No se encontraron movimientos.
+        </div>
+    </div>
+</div>
