@@ -1,5 +1,5 @@
 export interface Client {
-    identification: string;
+    identificationNumber: string;
     firstName: string;
     lastName: string;
     gender: boolean;

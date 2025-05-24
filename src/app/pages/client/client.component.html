@@ -1,7 +1,7 @@
 <div class="clients-container">
     <div class="header">
         <h1>Clientes</h1>
-        <button class="new-button">Nuevo</button>
+        <button class="new-button" (click)="openModal()">Nuevo</button>
     </div>
 
     <input type="text" class="search-box" placeholder="Buscar" [(ngModel)]="searchTerm" />
@@ -24,7 +24,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let client of filteredClients">
-                    <td>{{ client.identification }}</td>
+                    <td>{{ client.identificationNumber }}</td>
                     <td>{{ client.firstName }}</td>
                     <td>{{ client.lastName }}</td>
                     <td>{{ client.gender ? 'Masculino' : 'Femenino' }}</td>
@@ -40,9 +40,91 @@
                 </tr>
             </tbody>
         </table>
-        
+
         <div class="table-row empty" *ngIf="filteredClients.length === 0">
             No se encontraron clientes.
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal-backdrop" *ngIf="showModal">
+        <div class="modal">
+            <h2>Nuevo Cliente</h2>
+
+            <form [formGroup]="clientForm" (ngSubmit)="saveClient()">
+                <label>Identificación
+                    <input formControlName="identificationNumber" />
+                    <div *ngIf="identificationNumber?.invalid && (identificationNumber?.touched || identificationNumber?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="identificationNumber?.errors?.['required']">ID is required.</small>
+                        <small class="text-red" *ngIf="identificationNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Nombre
+                    <input formControlName="firstName" />
+                    <div *ngIf="firstName?.invalid && (firstName?.touched || firstName?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="firstName?.errors?.['required']">Name is required.</small>
+                        <small class="text-red" *ngIf="firstName?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Apellido
+                    <input formControlName="lastName" />
+                    <div *ngIf="lastName?.invalid && (lastName?.touched || lastName?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="lastName?.errors?.['required']">LastName is required.</small>
+                        <small class="text-red" *ngIf="lastName?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Género
+                    <select formControlName="gender">
+                        <option [value]="true">Masculino</option>
+                        <option [value]="false">Femenino</option>
+                    </select>
+                </label>
+
+                <label>Edad
+                    <input type="number" formControlName="age" />
+                </label>
+
+                <label>Teléfono
+                    <input formControlName="phoneNumber" />
+                    <div *ngIf="phoneNumber?.invalid && (phoneNumber?.touched || phoneNumber?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="phoneNumber?.errors?.['required']">Phone is required.</small>
+                        <small class="text-red" *ngIf="phoneNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Dirección
+                    <input formControlName="address" />
+                    <div *ngIf="address?.invalid && (address?.touched || address?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="address?.errors?.['required']">Address is required.</small>
+                        <small class="text-red" *ngIf="address?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Contraseña
+                    <input type="password" formControlName="password" />
+                    <div *ngIf="password?.invalid && (password?.touched || password?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="password?.errors?.['required']">Password is required.</small>
+                        <small class="text-red" *ngIf="password?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Estado
+                    <select formControlName="state">
+                        <option [value]="true">Activo</option>
+                        <option [value]="false">Inactivo</option>
+                    </select>
+                </label>
+
+                <div class="modal-actions">
+                    <button type="submit">Guardar</button>
+                    <button type="button" (click)="closeModal()">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
