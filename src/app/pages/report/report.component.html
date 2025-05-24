@@ -1,0 +1,25 @@
+<div class="report-container">
+  <h2>Generar Reporte</h2>
+
+  <div class="form-group">
+    <label for="account">Selecciona una Cuenta</label>
+    <select id="account" [(ngModel)]="selectedAccount">
+      <option value="" disabled selected>-- Seleccionar --</option>
+      <option *ngFor="let account of accounts" [value]="account">
+        {{ account }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="startDate">Fecha Inicio</label>
+    <input id="startDate" type="date" [(ngModel)]="startDate" />
+  </div>
+
+  <div class="form-group">
+    <label for="endDate">Fecha Fin</label>
+    <input id="endDate" type="date" [(ngModel)]="endDate" />
+  </div>
+
+  <button (click)="generateReport()">Generar Reporte</button>
+</div>
