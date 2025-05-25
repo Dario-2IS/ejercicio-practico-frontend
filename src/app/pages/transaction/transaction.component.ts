@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Transaction } from '../../services/interfaces/transaction.interface';
 import { TransactionService } from '../../services/transaction.service';
+import e from 'express';
 
 @Component({
   selector: 'app-transaction',
@@ -30,27 +31,26 @@ export class TransactionComponent {
 
   ngOnInit() {
     this.transactionService.getTransactions()
-    .subscribe((data: Transaction[]) => {
-      if (!data) {
+    .subscribe((response: any) => {
+      if (!response.data) {
         console.error('No data received from the service');
         return;
       }
-      if (!Array.isArray(data)) {
-        console.error('Expected an array of transactions, but received:', data);
+      if (!Array.isArray(response.data)) {
+        console.error('Expected an array of transactions, but received:', response.data);
         return;
       }
-      console.log('Transactions fetched:', data);
-      if (data.length === 0) {
+      if (response.data.length === 0) {
         console.warn('No transactions found');
         return;
       }
-      data.forEach(transaction => {
+      response.data.forEach((transaction: { id: any; transactionType: any; amount: any; }) => {
         if (!transaction.id || !transaction.transactionType || !transaction.amount) {
           console.error('Transaction data is missing required properties:', transaction);
           return;
         }
       });
-      this.transactions = data;
+      this.transactions = response.data;
     });
   }
 
@@ -83,21 +83,17 @@ export class TransactionComponent {
       console.error('Form is invalid');
       return;
     }
+    const accountData = this.transactionForm.value;
     this.formSubmitted = true;
-    console.log('Form submitted:', this.transactionForm.value);
-    this.showModal = false; 
-    this.transactionService.addTransaction(this.transactionForm.value)
-      .subscribe((response: Transaction) => {
-        if (!response) {
-          console.error('No response received from the service');
-          return;
+    this.closeModal();
+    this.transactionService.addTransaction(accountData)
+      .subscribe((response: any) => {
+        if (response.success) {
+          console.log('Transaction added:');
+          this.transactions.push(accountData);
+        }else {
+          console.error('Error adding transaction:');
         }
-        if (!response.id || !response.transactionType || !response.amount) {
-          console.error('Transaction data is missing required properties:', response);
-          return;
-        }
-        console.log('Transaction added:', response);
-        this.transactions.push(response);
       });
       this.transactionForm.reset();
       this.formSubmitted = false;
@@ -112,19 +108,14 @@ export class TransactionComponent {
   }
 
   deleteTransaction(transaction: Transaction) {
-    console.log('Delete', transaction);
     this.transactionService.deleteTransaction(transaction.id)
-      .subscribe((response: Transaction) => {
-        if (!response) {
-          console.error('No response received from the service');
-          return;
+      .subscribe((response: any) => {
+        if (response.success) {
+          console.log('Transaction deleted:', response);
+          this.transactions = this.transactions.filter(t => t.id !== transaction.id);
+        } else {
+          console.error('Error deleting transaction:', response);
         }
-        if (!response.id) {
-          console.error('Transaction data is missing required properties:', response);
-          return;
-        }
-        console.log('Transaction deleted:', response);
-        this.transactions = this.transactions.filter(t => t.id !== transaction.id);
       });
   }
 }

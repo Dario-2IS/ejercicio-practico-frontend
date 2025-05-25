@@ -21,41 +21,21 @@ export class ReportComponent {
 
   ngOnInit() {
     this.accountService.getAccounts()
-      .subscribe((data: Account[]) => {
-        if (!data) {
+      .subscribe((response: any) => {
+        if (!response.data) {
           console.error('No data received from the service');
           return;
         }
-        if (!Array.isArray(data)) {
-          console.error('Expected an array of accounts, but received:', data);
-          return;
-        }
-        console.log('Accounts fetched:', data);
-        if (data.length === 0) {
-          console.warn('No accounts found');
-          return;
-        }
-        data.forEach(account => {
-          if (!account.accountNumber || !account.accountType || !account.client.identificationNumber) {
-            console.error('Account data is missing required properties:', account);
-            return;
-          }
-        });
-
-        this.accounts = data;
+        this.accounts = response.data;
       });
   }
 
   generateReport() {
     if (!this.selectedAccount || !this.startDate || !this.endDate) {
       alert('Please fill in all fields');
-      console.error('Please fill in all fields');
       return;
     }
-
-    console.log('Generating report for account:', this.selectedAccount);
-    console.log('Start date:', this.startDate);
-    console.log('End date:', this.endDate);
+    
     this.reportService.getReport(this.selectedAccount, this.startDate, this.endDate)
       .subscribe(response => {
         const blob = new Blob([response.body!], { type: 'application/pdf' });

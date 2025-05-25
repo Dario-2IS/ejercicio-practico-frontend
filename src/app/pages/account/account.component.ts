@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Form, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Account } from '../../services/interfaces/account.interface';
 import { AccountService } from '../../services/account.service';
 
@@ -34,28 +34,27 @@ export class AccountComponent {
   
   ngOnInit() {
     this.accountService.getAccounts()
-    .subscribe((data: Account[]) => {
-      if (!data) {
+    .subscribe((response: any) => {
+      if (!response.data) {
         console.error('No data received from the service');
         return;
       }
-      if (!Array.isArray(data)) {
-        console.error('Expected an array of accounts, but received:', data);
+      if (!Array.isArray(response.data)) {
+        console.error('Expected an array of accounts, but received:', response.data);
         return;
       }
-      console.log('Accounts fetched:', data);
-      if (data.length === 0) {
+      if (response.data.length === 0) {
         console.warn('No accounts found');
         return;
       }
-      data.forEach(account => {  
+      response.data.forEach((account: { accountNumber: any; accountType: any; client: { identificationNumber: any; }; }) => {  
         if (!account.accountNumber || !account.accountType || !account.client.identificationNumber) {
           console.error('Account data is missing required properties:', account);
           return;
         }
       });
 
-      this.accounts = data;
+      this.accounts = response.data;
     });
   }
 
@@ -100,23 +99,18 @@ export class AccountComponent {
 
       const accountData = this.accountForm.value;
       this.formSubmitted = true;
-      console.log('Cuenta:', this.accountForm.value);
       this.closeModal();
       if (this.isEditMode && this.selectedAccount) {
         this.accountService.updateAccount(accountData)
-        .subscribe((response: Account) => {
-          if (!response) {
-            console.error('No response received from the service');
-            return;
-          }
-          if (!response.accountNumber || !response.accountType || !response.client.identificationNumber) {
-            console.error('Response data is missing required properties:', response);
-            return;
-          }
-          console.log('Account updated:', response);
-          const index = this.accounts.findIndex(c => c.accountNumber === this.selectedAccount);
-          if (index !== -1) {
-            this.accounts[index] = response;
+        .subscribe((response: any) => {
+          if (response.success) {
+            console.log('Account updated:', response);
+            const index = this.accounts.findIndex(c => c.accountNumber === accountData.accountNumber);
+            if (index !== -1) {
+              this.accounts[index] = accountData;
+            }else {
+              console.error('Failed to update account');
+            }
           }
         });
         this.isEditMode = false;
@@ -125,18 +119,14 @@ export class AccountComponent {
         this.accountForm.reset();
       }
       else {
-        this.accountService.addAccount(this.accountForm.value)
-        .subscribe((response: Account) => {
-          if (!response) {
-            console.error('No response received from the service');
-            return;
+        this.accountService.addAccount(accountData)
+        .subscribe((response: any) => {
+          if (response.success) {
+            console.log('Account added:', response);
+            this.accounts.push(accountData);
+          }else {
+            console.error('Failed to add client');
           }
-          if (!response.accountNumber || !response.accountType || !response.client.identificationNumber) {
-            console.error('Response data is missing required properties:', response);
-            return;
-          }
-          console.log('Account added:', response);
-          this.accounts.push(this.accountForm.value);
         });
         this.accountForm.reset();
         this.formSubmitted = false;
@@ -144,7 +134,6 @@ export class AccountComponent {
     }
 
     editAccount(account: Account) {
-      console.log('Edit', account);
       this.isEditMode = true;
       this.selectedAccount = account.accountNumber;
       this.openModal();
@@ -159,10 +148,9 @@ export class AccountComponent {
     }
   
     deleteAccount(account: Account) {
-      console.log('Delete', account);
-      this.accountService.deleteAccount(account.accountNumber).subscribe((response: any) => {
-        console.log('Response:', response);
-        if (response == 'Account deleted successfully') {
+      this.accountService.deleteAccount(account.accountNumber)
+      .subscribe((response: any) => {
+        if (response.success) {
           console.log('Account deleted successfully:', response);
           this.accounts = this.accounts.filter(c => c.accountNumber !== account.accountNumber);
         } else {

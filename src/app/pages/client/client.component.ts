@@ -115,13 +115,11 @@ export class ClientComponent {
 
     const clientData = this.clientForm.value;
     this.formSubmitted = true;
-    console.log('Cliente:', this.clientForm.value);
     this.closeModal();
     if (this.isEditMode && this.selectedClientId) {
       this.clientService.updateClient(clientData)
       .subscribe((response: any) => {
         if (response.success) {
-          console.log('Client updated successfully:', response);
           const index = this.clients.findIndex(c => c.identificationNumber === clientData.identificationNumber);
           if (index !== -1) {
             this.clients[index] = clientData;
