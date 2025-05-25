@@ -36,30 +36,29 @@ export class ClientComponent {
 
   ngOnInit() {
     this.clientService.getClients()
-    .subscribe((data: Client[]) => {
-      if (!data) {
+    .subscribe((response: any) => {
+      if (!response) {
         console.error('No data received from the service');
         return;
       }
-      if (!Array.isArray(data)) {
-        console.error('Expected an array of clients, but received:', data);
+      if (!Array.isArray(response.data)) {
+        console.error('Expected an array of clients, but received:', response.data);
         return;
       }
-      console.log('Clients fetched:', data);
 
-      if (data.length === 0) {
+      if (response.data.length === 0) {
         console.warn('No clients found');
         return;
       }
 
-      data.forEach(client => {
+      response.data.forEach((client: { identificationNumber: any; firstName: any; lastName: any; }) => {
         if (!client.identificationNumber || !client.firstName || !client.lastName) {
           console.error('Client data is missing required properties:', client);
           return;
         }
       });
 
-      this.clients = data;
+      this.clients = response.data;
     });
   }
 
@@ -121,12 +120,11 @@ export class ClientComponent {
     if (this.isEditMode && this.selectedClientId) {
       this.clientService.updateClient(clientData)
       .subscribe((response: any) => {
-        console.log('Response:', response);
-        if (response == 'Client updated successfully') {
+        if (response.success) {
           console.log('Client updated successfully:', response);
-          const index = this.clients.findIndex(c => c.identificationNumber === this.selectedClientId);
+          const index = this.clients.findIndex(c => c.identificationNumber === clientData.identificationNumber);
           if (index !== -1) {
-            this.clients[index] = this.clientForm.value;
+            this.clients[index] = clientData;
           }
         } else {
           console.error('Failed to update client');
@@ -140,10 +138,9 @@ export class ClientComponent {
     else {
       this.clientService.addClient(clientData)
       .subscribe((response: any) => {
-        console.log('Response:', response);
-        if (response == 'Client created successfully') {
+        if (response.success) {
           console.log('Client added successfully:', response);
-          this.clients.push(this.clientForm.value);
+          this.clients.push(clientData);
         }else {
           console.error('Failed to add client');
         }
@@ -154,7 +151,6 @@ export class ClientComponent {
   }
 
   editClient(client: Client) {
-    console.log('Edit', client);
     this.isEditMode = true;
     this.selectedClientId = client.identificationNumber;
     this.openModal();
@@ -172,10 +168,9 @@ export class ClientComponent {
   }
 
   deleteClient(client: Client) {
-    console.log('Delete', client);
-    this.clientService.deleteClient(client.identificationNumber).subscribe((response: any) => {
-      console.log('Response:', response);
-      if (response == 'Client deleted successfully') {
+    this.clientService.deleteClient(client.identificationNumber)
+    .subscribe((response: any) => {
+      if (response.success) {
         console.log('Client deleted successfully:', response);
         this.clients = this.clients.filter(c => c.identificationNumber !== client.identificationNumber);
       } else {
