@@ -55,10 +55,9 @@
                     </div>
                 </label>
 
-                <label>Tipo
+                <label>Tipo 
                     <select formControlName="accountType">
-                        <option [value]="true">Saving</option>
-                        <option [value]="false">Corriente</option>
+                        <option *ngFor="let type of accountTypes" [value]="type">{{type}}</option>
                     </select>
                 </label>
 
@@ -72,8 +71,7 @@
 
                 <label>Moneda
                     <select formControlName="currency">
-                        <option [value]="true">USD</option>
-                        <option [value]="false">EU</option>
+                        <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
                     </select>
                 </label>
 

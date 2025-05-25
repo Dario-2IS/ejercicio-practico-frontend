@@ -16,14 +16,16 @@ export class AccountComponent {
   showModal = false;
   accountForm: FormGroup;
   formSubmitted: boolean = false;
+  accountTypes: string[] = ['Savings', 'Checking'];
+  currencies: string[] = ['USD', 'EUR'];
 
   constructor(private accountService: AccountService, private fb: FormBuilder) {
     this.accountForm = this.fb.group({
       accountNumber: ['', [Validators.required, Validators.minLength(10)]],
-      accountType: ['', [Validators.required, Validators.minLength(3)]],
+      accountType: ['Savings', [Validators.required, Validators.minLength(3)]],
       clientIdentificationNumber: ['', [Validators.required, Validators.minLength(10)]],
       balance: [0, [Validators.required, Validators.min(0)]],
-      currency: [true, [Validators.required]],
+      currency: ['USD', [Validators.required]],
       state: [true, [Validators.required]]
     });
   }
@@ -88,11 +90,12 @@ export class AccountComponent {
     }
 
     saveAccount() {
-      this.formSubmitted = true;
       if (this.accountForm.invalid) {
         return;
       }
+      this.formSubmitted = true;
       console.log('Account', this.accountForm.value);
+      this.closeModal();
       this.accountService.addAccount(this.accountForm.value)
         .subscribe((response: Account) => {
           if (!response) {
