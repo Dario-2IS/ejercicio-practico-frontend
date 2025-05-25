@@ -121,7 +121,7 @@
                 </label>
 
                 <div class="modal-actions">
-                    <button type="submit">Guardar</button>
+                    <button type="submit" [disabled]="clientForm.invalid">Guardar</button>
                     <button type="button" (click)="closeModal()">Cancelar</button>
                 </div>
             </form>

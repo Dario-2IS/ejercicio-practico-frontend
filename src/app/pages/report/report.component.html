@@ -5,8 +5,8 @@
     <label for="account">Selecciona una Cuenta</label>
     <select id="account" [(ngModel)]="selectedAccount">
       <option value="" disabled selected>-- Seleccionar --</option>
-      <option *ngFor="let account of accounts" [value]="account">
-        {{ account }}
+      <option *ngFor="let account of accounts" [value]="account.accountNumber">
+        {{ account.accountNumber }}
       </option>
     </select>
   </div>

@@ -74,6 +74,7 @@ export class TransactionComponent {
 
   closeModal() {
     this.showModal = false;
+    this.transactionForm.reset();
   }
 
   saveTransaction() {

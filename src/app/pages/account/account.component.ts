@@ -29,6 +29,7 @@ export class AccountComponent {
       state: [true, [Validators.required]]
     });
   }
+  
   ngOnInit() {
     this.accountService.getAccounts()
     .subscribe((data: Account[]) => {
@@ -78,6 +79,7 @@ export class AccountComponent {
 
   closeModal() {
     this.showModal = false;
+    this.accountForm.reset();
   }
 
   get filteredAccounts(): Account[] {

@@ -82,7 +82,7 @@
                     </select>
                 </label>
 
-                <label>Id. Cliente
+                <label>Identificacion Cliente
                     <input formControlName="clientIdentificationNumber" />
                     <div *ngIf="clientIdentificationNumber?.invalid && (clientIdentificationNumber?.touched || clientIdentificationNumber?.dirty || formSubmitted)" class="error">
                         <small class="text-red" *ngIf="clientIdentificationNumber?.errors?.['required']">Client Identification is required.</small>
@@ -90,7 +90,7 @@
                     </div>
                 </label>
                 <div class="modal-actions">
-                    <button type="submit">Guardar</button>
+                    <button type="submit" [disabled]="accountForm.invalid">Guardar</button>
                     <button type="button" (click)="closeModal()">Cancelar</button>
                 </div>
             </form>

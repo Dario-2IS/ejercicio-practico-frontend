@@ -104,6 +104,7 @@ export class ClientComponent {
 
   closeModal() {
     this.showModal = false;
+    this.clientForm.reset();
   }
 
   saveClient() {

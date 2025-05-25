@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
+import { AccountService } from '../../services/account.service';
+import { Account } from '../../services/interfaces/account.interface';
 
 @Component({
   selector: 'app-report',
@@ -13,12 +15,36 @@ export class ReportComponent {
   selectedAccount: string = '';
   startDate: string = '';
   endDate: string = '';
+  accounts: Account[] = [];
 
-  accounts: string[] = [
-    'ACC5678299'
-  ];
+  constructor(private reportService: ReportService, private accountService: AccountService) {}
 
-  constructor(private reportService: ReportService) {}
+  ngOnInit() {
+    this.accountService.getAccounts()
+        .subscribe((data: Account[]) => {
+          if (!data) {
+            console.error('No data received from the service');
+            return;
+          }
+          if (!Array.isArray(data)) {
+            console.error('Expected an array of accounts, but received:', data);
+            return;
+          }
+          console.log('Accounts fetched:', data);
+          if (data.length === 0) {
+            console.warn('No accounts found');
+            return;
+          }
+          data.forEach(account => {  
+            if (!account.accountNumber || !account.accountType || !account.client.identificationNumber) {
+              console.error('Account data is missing required properties:', account);
+              return;
+            }
+          });
+    
+          this.accounts = data;
+        });
+  }
 
   generateReport() {
     if (!this.selectedAccount || !this.startDate || !this.endDate) {
