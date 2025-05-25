@@ -9,6 +9,7 @@
     "test": "jest",
     "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
   },
+  "type": "module",
   "private": true,
   "dependencies": {
     "@angular/common": "^19.2.0",
@@ -30,15 +31,10 @@
     "@angular/cli": "^19.2.5",
     "@angular/compiler-cli": "^19.2.0",
     "@types/express": "^4.17.17",
-    "@types/jasmine": "~5.1.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^18.18.0",
     "jest": "^29.7.0",
     "jest-preset-angular": "^14.5.5",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
     "ts-jest": "^29.3.4",
     "typescript": "~5.7.2"
   }
