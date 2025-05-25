@@ -1,7 +1,7 @@
 <div class="clients-container">
     <div class="header">
         <h1>Movimientos</h1>
-        <button class="new-button">Nuevo</button>
+        <button class="new-button" (click)="openModal()">Nuevo</button>
     </div>
 
     <input type="text" class="search-box" placeholder="Buscar" [(ngModel)]="searchTerm" />
@@ -32,9 +32,8 @@
                     <td>{{ tx.currency }}</td>
                     <td>{{ tx.date }}</td>
                     <td>{{ tx.time }}</td>
-                    <td>{{ tx.accountId }}</td>
+                    <td>{{ tx.account.accountNumber }}</td>
                     <td>
-                        <button (click)="editTransaction(tx)" title="Editar">✏️</button>
                         <button (click)="deleteTransaction(tx)" title="Eliminar">🗑️</button>
                     </td>
                 </tr>
@@ -43,6 +42,49 @@
         
         <div class="table-row empty" *ngIf="filteredTransactions.length === 0">
             No se encontraron movimientos.
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal-backdrop" *ngIf="showModal">
+        <div class="modal">
+            <h2>Nueva Cuenta</h2>
+
+            <form [formGroup]="transactionForm" (ngSubmit)="saveTransaction()">
+                <label>Tipo 
+                    <select formControlName="transactionType">
+                        <option *ngFor="let type of transactionTypes" [value]="type">{{type}}</option>
+                    </select>
+                </label>
+
+                <label>Monto
+                    <input formControlName="amount" />
+                    <div *ngIf="amount?.invalid && (amount?.touched || amount?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="amount?.errors?.['required']">Mount is required.</small>
+                        <small class="text-red" *ngIf="amount?.errors?.['minlength']">Ivalid mount.</small>
+                    </div>
+                </label>
+
+                <label>Moneda
+                    <select formControlName="currency">
+                        <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
+                    </select>
+                </label>
+
+                <label># Cuenta
+                    <input formControlName="accountNumber" />
+                    <div *ngIf="accountNumber?.invalid && (accountNumber?.touched || accountNumber?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="accountNumber?.errors?.['required']">Client Identification is required.</small>
+                        <small class="text-red" *ngIf="accountNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <div class="modal-actions">
+                    <button type="submit">Guardar</button>
+                    <button type="button" (click)="closeModal()">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
