@@ -45,8 +45,8 @@ export class ClientService {
     );
   }
 
-  updateClient(id: number, client: Client): Observable<any> {
-    return this.http.put(`${this.apiUrl}/clients/${id}`, client)
+  updateClient(client: Client): Observable<any> {
+    return this.http.put(`${this.apiUrl}/clients`, client)
     .pipe(
       map(response => response),
       catchError(error => {

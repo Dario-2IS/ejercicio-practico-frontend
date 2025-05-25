@@ -17,33 +17,33 @@ export class ReportComponent {
   endDate: string = '';
   accounts: Account[] = [];
 
-  constructor(private reportService: ReportService, private accountService: AccountService) {}
+  constructor(private reportService: ReportService, private accountService: AccountService) { }
 
   ngOnInit() {
     this.accountService.getAccounts()
-        .subscribe((data: Account[]) => {
-          if (!data) {
-            console.error('No data received from the service');
+      .subscribe((data: Account[]) => {
+        if (!data) {
+          console.error('No data received from the service');
+          return;
+        }
+        if (!Array.isArray(data)) {
+          console.error('Expected an array of accounts, but received:', data);
+          return;
+        }
+        console.log('Accounts fetched:', data);
+        if (data.length === 0) {
+          console.warn('No accounts found');
+          return;
+        }
+        data.forEach(account => {
+          if (!account.accountNumber || !account.accountType || !account.client.identificationNumber) {
+            console.error('Account data is missing required properties:', account);
             return;
           }
-          if (!Array.isArray(data)) {
-            console.error('Expected an array of accounts, but received:', data);
-            return;
-          }
-          console.log('Accounts fetched:', data);
-          if (data.length === 0) {
-            console.warn('No accounts found');
-            return;
-          }
-          data.forEach(account => {  
-            if (!account.accountNumber || !account.accountType || !account.client.identificationNumber) {
-              console.error('Account data is missing required properties:', account);
-              return;
-            }
-          });
-    
-          this.accounts = data;
         });
+
+        this.accounts = data;
+      });
   }
 
   generateReport() {
@@ -58,14 +58,14 @@ export class ReportComponent {
     console.log('End date:', this.endDate);
     this.reportService.getReport(this.selectedAccount, this.startDate, this.endDate)
       .subscribe(response => {
-    const blob = new Blob([response.body!], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'transactions.pdf';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  });
+        const blob = new Blob([response.body!], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'transactions.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
   }
 
 }

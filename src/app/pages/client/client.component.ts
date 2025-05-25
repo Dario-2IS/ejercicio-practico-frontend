@@ -17,6 +17,8 @@ export class ClientComponent {
   showModal = false;
   clientForm: FormGroup;
   formSubmitted: boolean = false;
+  isEditMode: boolean = false;
+  selectedClientId: string = '';
 
   constructor(private clientService: ClientService, private fb: FormBuilder) {
     this.clientForm = this.fb.group({
@@ -111,10 +113,32 @@ export class ClientComponent {
     if (this.clientForm.invalid) {
       return;
     }
+
+    const clientData = this.clientForm.value;
     this.formSubmitted = true;
     console.log('Cliente:', this.clientForm.value);
-      this.closeModal();
-      this.clientService.addClient(this.clientForm.value)
+    this.closeModal();
+    if (this.isEditMode && this.selectedClientId) {
+      this.clientService.updateClient(clientData)
+      .subscribe((response: any) => {
+        console.log('Response:', response);
+        if (response == 'Client updated successfully') {
+          console.log('Client updated successfully:', response);
+          const index = this.clients.findIndex(c => c.identificationNumber === this.selectedClientId);
+          if (index !== -1) {
+            this.clients[index] = this.clientForm.value;
+          }
+        } else {
+          console.error('Failed to update client');
+        }
+      });
+      this.clientForm.reset();
+      this.formSubmitted = false;
+      this.isEditMode = false;
+      this.selectedClientId = '';
+    }
+    else {
+      this.clientService.addClient(clientData)
       .subscribe((response: any) => {
         console.log('Response:', response);
         if (response == 'Client created successfully') {
@@ -126,10 +150,25 @@ export class ClientComponent {
       });
       this.clientForm.reset();
       this.formSubmitted = false;
+    }
   }
 
   editClient(client: Client) {
     console.log('Edit', client);
+    this.isEditMode = true;
+    this.selectedClientId = client.identificationNumber;
+    this.openModal();
+    this.clientForm.patchValue({
+      identificationNumber: client.identificationNumber,
+      firstName: client.firstName,
+      lastName: client.lastName,
+      gender: client.gender,
+      age: client.age,
+      phoneNumber: client.phoneNumber,
+      address: client.address,
+      password: client.password,
+      state: client.state
+    });
   }
 
   deleteClient(client: Client) {

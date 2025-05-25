@@ -18,6 +18,8 @@ export class AccountComponent {
   formSubmitted: boolean = false;
   accountTypes: string[] = ['Savings', 'Checking'];
   currencies: string[] = ['USD', 'EUR'];
+  isEditMode: boolean = false;
+  selectedAccount: string = '';
 
   constructor(private accountService: AccountService, private fb: FormBuilder) {
     this.accountForm = this.fb.group({
@@ -95,10 +97,35 @@ export class AccountComponent {
       if (this.accountForm.invalid) {
         return;
       }
+
+      const accountData = this.accountForm.value;
       this.formSubmitted = true;
-      console.log('Account', this.accountForm.value);
+      console.log('Cuenta:', this.accountForm.value);
       this.closeModal();
-      this.accountService.addAccount(this.accountForm.value)
+      if (this.isEditMode && this.selectedAccount) {
+        this.accountService.updateAccount(accountData)
+        .subscribe((response: Account) => {
+          if (!response) {
+            console.error('No response received from the service');
+            return;
+          }
+          if (!response.accountNumber || !response.accountType || !response.client.identificationNumber) {
+            console.error('Response data is missing required properties:', response);
+            return;
+          }
+          console.log('Account updated:', response);
+          const index = this.accounts.findIndex(c => c.accountNumber === this.selectedAccount);
+          if (index !== -1) {
+            this.accounts[index] = response;
+          }
+        });
+        this.isEditMode = false;
+        this.selectedAccount = '';
+        this.formSubmitted = false;
+        this.accountForm.reset();
+      }
+      else {
+        this.accountService.addAccount(this.accountForm.value)
         .subscribe((response: Account) => {
           if (!response) {
             console.error('No response received from the service');
@@ -113,10 +140,22 @@ export class AccountComponent {
         });
         this.accountForm.reset();
         this.formSubmitted = false;
+      }
     }
 
     editAccount(account: Account) {
       console.log('Edit', account);
+      this.isEditMode = true;
+      this.selectedAccount = account.accountNumber;
+      this.openModal();
+      this.accountForm.patchValue({
+        accountNumber: account.accountNumber,
+        accountType: account.accountType,
+        clientIdentificationNumber: account.client.identificationNumber,
+        balance: account.balance,
+        currency: account.currency,
+        state: account.state
+      });
     }
   
     deleteAccount(account: Account) {

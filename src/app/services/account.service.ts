@@ -44,8 +44,8 @@ export class AccountService {
     );
   }
 
-  updateAccount(id: number, account: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/accounts/${id}`, account)
+  updateAccount(account: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/accounts`, account)
     .pipe(
       map(response => response),
       catchError(error => {
