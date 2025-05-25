@@ -38,7 +38,7 @@ export class ClientComponent {
     this.clientService.getClients()
     .subscribe((response: any) => {
       if (!response) {
-        console.error('No data received from the service');
+        alert('No data received from the service');
         return;
       }
       if (!Array.isArray(response.data)) {
@@ -47,16 +47,9 @@ export class ClientComponent {
       }
 
       if (response.data.length === 0) {
-        console.warn('No clients found');
+        alert('No clients found');
         return;
       }
-
-      response.data.forEach((client: { identificationNumber: any; firstName: any; lastName: any; }) => {
-        if (!client.identificationNumber || !client.firstName || !client.lastName) {
-          console.error('Client data is missing required properties:', client);
-          return;
-        }
-      });
 
       this.clients = response.data;
     });
@@ -109,23 +102,24 @@ export class ClientComponent {
   }
 
   saveClient() {
+    this.formSubmitted = true;
     if (this.clientForm.invalid) {
       return;
     }
 
     const clientData = this.clientForm.value;
-    this.formSubmitted = true;
     this.closeModal();
     if (this.isEditMode && this.selectedClientId) {
       this.clientService.updateClient(clientData)
       .subscribe((response: any) => {
         if (response.success) {
+          alert('Client updated successfully');
           const index = this.clients.findIndex(c => c.identificationNumber === clientData.identificationNumber);
           if (index !== -1) {
             this.clients[index] = clientData;
           }
         } else {
-          console.error('Failed to update client');
+          alert('Failed to update client');
         }
       });
       this.clientForm.reset();
@@ -137,10 +131,10 @@ export class ClientComponent {
       this.clientService.addClient(clientData)
       .subscribe((response: any) => {
         if (response.success) {
-          console.log('Client added successfully:', response);
+          alert('Client added successfully');
           this.clients.push(clientData);
         }else {
-          console.error('Failed to add client');
+          alert('Failed to add client');
         }
       });
       this.clientForm.reset();
@@ -169,10 +163,10 @@ export class ClientComponent {
     this.clientService.deleteClient(client.identificationNumber)
     .subscribe((response: any) => {
       if (response.success) {
-        console.log('Client deleted successfully:', response);
+        alert('Client deleted successfully');
         this.clients = this.clients.filter(c => c.identificationNumber !== client.identificationNumber);
       } else {
-        console.error('Failed to delete client');
+        alert('Failed to delete client');
       }
     });
   }

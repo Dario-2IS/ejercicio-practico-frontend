@@ -36,7 +36,7 @@ export class AccountComponent {
     this.accountService.getAccounts()
     .subscribe((response: any) => {
       if (!response.data) {
-        console.error('No data received from the service');
+        alert('No data received from the service');
         return;
       }
       if (!Array.isArray(response.data)) {
@@ -44,15 +44,9 @@ export class AccountComponent {
         return;
       }
       if (response.data.length === 0) {
-        console.warn('No accounts found');
+        alert('No accounts found');
         return;
       }
-      response.data.forEach((account: { accountNumber: any; accountType: any; client: { identificationNumber: any; }; }) => {  
-        if (!account.accountNumber || !account.accountType || !account.client.identificationNumber) {
-          console.error('Account data is missing required properties:', account);
-          return;
-        }
-      });
 
       this.accounts = response.data;
     });
@@ -93,23 +87,23 @@ export class AccountComponent {
     }
 
     saveAccount() {
+      this.formSubmitted = true;
       if (this.accountForm.invalid) {
         return;
       }
 
       const accountData = this.accountForm.value;
-      this.formSubmitted = true;
       this.closeModal();
       if (this.isEditMode && this.selectedAccount) {
         this.accountService.updateAccount(accountData)
         .subscribe((response: any) => {
           if (response.success) {
-            console.log('Account updated:', response);
+            alert('Account updated:');
             const index = this.accounts.findIndex(c => c.accountNumber === accountData.accountNumber);
             if (index !== -1) {
               this.accounts[index] = accountData;
             }else {
-              console.error('Failed to update account');
+              alert('Failed to update account');
             }
           }
         });
@@ -122,10 +116,10 @@ export class AccountComponent {
         this.accountService.addAccount(accountData)
         .subscribe((response: any) => {
           if (response.success) {
-            console.log('Account added:', response);
+            alert('Account added successfully');
             this.accounts.push(accountData);
           }else {
-            console.error('Failed to add client');
+            alert('Failed to add account');
           }
         });
         this.accountForm.reset();
@@ -151,10 +145,10 @@ export class AccountComponent {
       this.accountService.deleteAccount(account.accountNumber)
       .subscribe((response: any) => {
         if (response.success) {
-          console.log('Account deleted successfully:', response);
+          alert('Account deleted successfully');
           this.accounts = this.accounts.filter(c => c.accountNumber !== account.accountNumber);
         } else {
-          console.error('Failed to delete account');
+          alert('Failed to delete account');
         }
       });
     }

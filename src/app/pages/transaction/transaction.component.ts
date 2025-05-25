@@ -33,7 +33,7 @@ export class TransactionComponent {
     this.transactionService.getTransactions()
     .subscribe((response: any) => {
       if (!response.data) {
-        console.error('No data received from the service');
+        alert('No data received from the service');
         return;
       }
       if (!Array.isArray(response.data)) {
@@ -41,15 +41,10 @@ export class TransactionComponent {
         return;
       }
       if (response.data.length === 0) {
-        console.warn('No transactions found');
+        alert('No transactions found');
         return;
       }
-      response.data.forEach((transaction: { id: any; transactionType: any; amount: any; }) => {
-        if (!transaction.id || !transaction.transactionType || !transaction.amount) {
-          console.error('Transaction data is missing required properties:', transaction);
-          return;
-        }
-      });
+      
       this.transactions = response.data;
     });
   }
@@ -77,27 +72,6 @@ export class TransactionComponent {
     this.transactionForm.reset();
   }
 
-  saveTransaction() {
-    this.formSubmitted = true;
-    if (this.transactionForm.invalid) {
-      console.error('Form is invalid');
-      return;
-    }
-    const accountData = this.transactionForm.value;
-    this.formSubmitted = true;
-    this.closeModal();
-    this.transactionService.addTransaction(accountData)
-      .subscribe((response: any) => {
-        if (response.success) {
-          console.log('Transaction added:');
-          this.transactions.push(accountData);
-        }else {
-          console.error('Error adding transaction:');
-        }
-      });
-      this.transactionForm.reset();
-      this.formSubmitted = false;
-  }
   get filteredTransactions(): Transaction[] {
     const term = this.searchTerm.toLowerCase();
     return this.transactions.filter(t =>
@@ -107,14 +81,36 @@ export class TransactionComponent {
     );
   }
 
+  saveTransaction() {
+    this.formSubmitted = true;
+    if (this.transactionForm.invalid) {
+      return;
+    }
+
+    const accountData = this.transactionForm.value;
+    this.formSubmitted = true;
+    this.closeModal();
+    this.transactionService.addTransaction(accountData)
+      .subscribe((response: any) => {
+        if (response.success) {
+          alert('Transaction added successfully');
+          this.transactions.push(accountData);
+        }else {
+          alert('Error adding transaction');
+        }
+      });
+      this.transactionForm.reset();
+      this.formSubmitted = false;
+  }
+
   deleteTransaction(transaction: Transaction) {
     this.transactionService.deleteTransaction(transaction.id)
       .subscribe((response: any) => {
         if (response.success) {
-          console.log('Transaction deleted:', response);
+          alert('Transaction deleted successfully');
           this.transactions = this.transactions.filter(t => t.id !== transaction.id);
         } else {
-          console.error('Error deleting transaction:', response);
+          alert('Error deleting transaction');
         }
       });
   }

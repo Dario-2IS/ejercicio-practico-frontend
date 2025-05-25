@@ -23,7 +23,7 @@ export class ReportComponent {
     this.accountService.getAccounts()
       .subscribe((response: any) => {
         if (!response.data) {
-          console.error('No data received from the service');
+          alert('No data received from the service');
           return;
         }
         this.accounts = response.data;
