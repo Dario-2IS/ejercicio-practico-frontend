@@ -1,7 +1,7 @@
 <div class="clients-container">
     <div class="header">
         <h1>Cuentas</h1>
-        <button class="new-button">Nuevo</button>
+        <button class="new-button" (click)="openModal()">Nuevo</button>
     </div>
 
     <input type="text" class="search-box" placeholder="Buscar" [(ngModel)]="searchTerm" />
@@ -26,7 +26,7 @@
                     <td>{{ account.balance }}</td>
                     <td>{{ account.currency }}</td>
                     <td>{{ account.state ? 'Activo' : 'Inactivo' }}</td>
-                    <td>{{ account.clientId }}</td>
+                    <td>{{ account.client.identificationNumber }}</td>
                     <td>
                         <button (click)="editAccount(account)" title="Editar">✏️</button>
                         <button (click)="deleteAccount(account)" title="Eliminar">🗑️</button>
@@ -37,6 +37,65 @@
         
         <div class="table-row empty" *ngIf="filteredAccounts.length === 0">
             No se encontraron cuentas.
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal-backdrop" *ngIf="showModal">
+        <div class="modal">
+            <h2>Nueva Cuenta</h2>
+
+            <form [formGroup]="accountForm" (ngSubmit)="saveAccount()">
+                <label>Numero de Cuenta
+                    <input formControlName="accountNumber" />
+                    <div *ngIf="accountNumber?.invalid && (accountNumber?.touched || accountNumber?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="accountNumber?.errors?.['required']">Account Number is required.</small>
+                        <small class="text-red" *ngIf="accountNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Tipo
+                    <select formControlName="accountType">
+                        <option [value]="true">Saving</option>
+                        <option [value]="false">Corriente</option>
+                    </select>
+                </label>
+
+                <label>Saldo
+                    <input formControlName="balance" />
+                    <div *ngIf="balance?.invalid && (balance?.touched || balance?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="balance?.errors?.['required']">LastName is required.</small>
+                        <small class="text-red" *ngIf="balance?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+
+                <label>Moneda
+                    <select formControlName="currency">
+                        <option [value]="true">USD</option>
+                        <option [value]="false">EU</option>
+                    </select>
+                </label>
+
+                <label>Estado
+                    <select formControlName="state">
+                        <option [value]="true">Activo</option>
+                        <option [value]="false">Inactivo</option>
+                    </select>
+                </label>
+
+                <label>Id. Cliente
+                    <input formControlName="clientIdentificationNumber" />
+                    <div *ngIf="clientIdentificationNumber?.invalid && (clientIdentificationNumber?.touched || clientIdentificationNumber?.dirty || formSubmitted)" class="error">
+                        <small class="text-red" *ngIf="clientIdentificationNumber?.errors?.['required']">Client Identification is required.</small>
+                        <small class="text-red" *ngIf="clientIdentificationNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                    </div>
+                </label>
+                <div class="modal-actions">
+                    <button type="submit">Guardar</button>
+                    <button type="button" (click)="closeModal()">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

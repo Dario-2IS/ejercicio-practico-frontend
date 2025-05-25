@@ -33,7 +33,8 @@ export class ClientComponent {
   }
 
   ngOnInit() {
-    this.clientService.getClients().subscribe((data: Client[]) => {
+    this.clientService.getClients()
+    .subscribe((data: Client[]) => {
       if (!data) {
         console.error('No data received from the service');
         return;
