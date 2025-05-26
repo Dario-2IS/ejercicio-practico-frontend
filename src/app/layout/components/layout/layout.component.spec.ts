@@ -8,13 +8,16 @@ import { provideRouter } from '@angular/router';
 describe('LayoutComponent', () => {
   let component: LayoutComponent;
   let fixture: ComponentFixture<LayoutComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RouterOutlet, TopbarComponent, MenuComponent, LayoutComponent],
       providers: [provideRouter([])]
     }).compileComponents();
+    
     fixture = TestBed.createComponent(LayoutComponent);
-    component = fixture.componentInstance; fixture.detectChanges();
+    component = fixture.componentInstance; 
+    fixture.detectChanges();
   });
 
   it('should create the layout component',
@@ -27,6 +30,7 @@ describe('LayoutComponent', () => {
       const compiled = fixture.nativeElement;
       const topbarElement = compiled.querySelector('app-topbar');
       const menuElement = compiled.querySelector('app-menu');
-      expect(topbarElement).toBeTruthy(); expect(menuElement).toBeTruthy();
+      expect(topbarElement).toBeTruthy(); 
+      expect(menuElement).toBeTruthy();
     });
-}); // We recommend installing an extension to run jest tests.  
+});
