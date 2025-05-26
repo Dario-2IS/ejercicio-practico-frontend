@@ -17,7 +17,7 @@ export class TransactionComponent {
   showModal = false;
   transactionForm: FormGroup;
   formSubmitted: boolean = false;
-  transactionTypes: string[] = ['DEPOSIT', 'WITHDRAWAL'];
+  transactionTypes: any[] = [{ value: 'DEPOSIT', label: 'DEPOSITO'}, { value: 'WITHDRAWAL', label: 'RETIRO' }];
 
   constructor(private transactionService: TransactionService, private fb: FormBuilder) {
     this.transactionForm = this.fb.group({

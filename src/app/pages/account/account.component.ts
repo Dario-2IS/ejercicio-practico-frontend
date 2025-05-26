@@ -16,7 +16,7 @@ export class AccountComponent {
   showModal = false;
   accountForm: FormGroup;
   formSubmitted: boolean = false;
-  accountTypes: string[] = ['Savings', 'Checking'];
+  accountTypes: string[] = ['Ahorros', 'Corriente' ];
   isEditMode: boolean = false;
   selectedAccount: string = '';
 
