@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Transaction } from '../../services/interfaces/transaction.interface';
 import { TransactionService } from '../../services/transaction.service';
-import e from 'express';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transaction',
@@ -17,9 +17,9 @@ export class TransactionComponent {
   showModal = false;
   transactionForm: FormGroup;
   formSubmitted: boolean = false;
-  transactionTypes: any[] = [{ value: 'DEPOSIT', label: 'DEPOSITO'}, { value: 'WITHDRAWAL', label: 'RETIRO' }];
+  transactionTypes: any[] = [{ value: 'DEPOSIT', label: 'DEPOSITO' }, { value: 'WITHDRAWAL', label: 'RETIRO' }];
 
-  constructor(private transactionService: TransactionService, private fb: FormBuilder) {
+  constructor(private router:Router, private transactionService: TransactionService, private fb: FormBuilder) {
     this.transactionForm = this.fb.group({
       transactionType: ['DEPOSIT', [Validators.required, Validators.minLength(3)]],
       amount: [0, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]+(\\.[0-9]{1,2})?$')]],
@@ -29,22 +29,22 @@ export class TransactionComponent {
 
   ngOnInit() {
     this.transactionService.getTransactions()
-    .subscribe((response: any) => {
-      if (!response.data) {
-        alert('No data received from the service');
-        return;
-      }
-      if (!Array.isArray(response.data)) {
-        console.error('Expected an array of transactions, but received:', response.data);
-        return;
-      }
-      if (response.data.length === 0) {
-        alert('No transactions found');
-        return;
-      }
-      
-      this.transactions = response.data;
-    });
+      .subscribe((response: any) => {
+        if (!response.data) {
+          alert('No data received from the service');
+          return;
+        }
+        if (!Array.isArray(response.data)) {
+          console.error('Expected an array of transactions, but received:', response.data);
+          return;
+        }
+        if (response.data.length === 0) {
+          alert('No transactions found');
+          return;
+        }
+
+        this.transactions = response.data;
+      });
   }
 
 
@@ -60,7 +60,7 @@ export class TransactionComponent {
   get accountNumber() {
     return this.transactionForm.get('accountNumber');
   }
-  
+
   openModal() {
     this.showModal = true;
   }
@@ -75,7 +75,8 @@ export class TransactionComponent {
     return this.transactions.filter(t =>
       t.id.toString().includes(term) ||
       t.transactionType.toLowerCase().includes(term) ||
-      t.currency.toLowerCase().includes(term)
+      t.date.includes(term) ||
+      t.account.accountNumber.toLowerCase().includes(term)
     );
   }
 
@@ -93,12 +94,13 @@ export class TransactionComponent {
         if (response.success) {
           alert('Transaction added successfully');
           this.transactions.push(accountData);
-        }else {
+        } else {
           alert('Error adding transaction');
         }
       });
-      this.transactionForm.reset();
-      this.formSubmitted = false;
+    this.transactionForm.reset();
+    this.formSubmitted = false;
+    this.reloadComponent();
   }
 
   deleteTransaction(transaction: Transaction) {
@@ -111,5 +113,12 @@ export class TransactionComponent {
           alert('Error deleting transaction');
         }
       });
+  }
+
+  reloadComponent() {
+    const currentUrl = this.router.url;
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([currentUrl]);
+    });
   }
 }
