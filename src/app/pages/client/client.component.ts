@@ -36,23 +36,29 @@ export class ClientComponent {
 
   ngOnInit() {
     this.clientService.getClients()
-    .subscribe((response: any) => {
-      if (!response) {
-        alert('No data received from the service');
-        return;
-      }
-      if (!Array.isArray(response.data)) {
-        console.error('Expected an array of clients, but received:', response.data);
-        return;
-      }
+      .subscribe({
+        next: (response: any) => {
+          if (!response) {
+            alert('No data received from the service');
+            return;
+          }
+          if (!Array.isArray(response.data)) {
+            console.error('Expected an array of clients, but received:', response.data);
+            return;
+          }
 
-      if (response.data.length === 0) {
-        alert('No clients found');
-        return;
-      }
+          if (response.data.length === 0) {
+            alert('No clients found');
+            return;
+          }
 
-      this.clients = response.data;
-    });
+          this.clients = response.data;
+        },
+        error: (error) => {
+          console.error('Error fetching clients:', error);
+          alert(error?.error?.message || 'Ocurrió un error inesperado');
+        }
+      });
   }
 
   get identificationNumber() {
@@ -82,7 +88,7 @@ export class ClientComponent {
   get state() {
     return this.clientForm.get('state');
   }
-  
+
   get filteredClients(): Client[] {
     const term = this.searchTerm.toLowerCase();
     return this.clients.filter(c =>
@@ -111,17 +117,23 @@ export class ClientComponent {
     this.closeModal();
     if (this.isEditMode && this.selectedClientId) {
       this.clientService.updateClient(clientData)
-      .subscribe((response: any) => {
-        if (response.success) {
-          alert('Client updated successfully');
-          const index = this.clients.findIndex(c => c.identificationNumber === clientData.identificationNumber);
-          if (index !== -1) {
-            this.clients[index] = clientData;
+        .subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              alert('Client updated successfully');
+              const index = this.clients.findIndex(c => c.identificationNumber === clientData.identificationNumber);
+              if (index !== -1) {
+                this.clients[index] = clientData;
+              }
+            } else {
+              alert('Failed to update client');
+            }
+          },
+          error: (error) => {
+            console.error('Error updating client:', error);
+            alert(error?.error?.message || 'Ocurrió un error inesperado');
           }
-        } else {
-          alert('Failed to update client');
-        }
-      });
+        });
       this.clientForm.reset();
       this.formSubmitted = false;
       this.isEditMode = false;
@@ -129,14 +141,20 @@ export class ClientComponent {
     }
     else {
       this.clientService.addClient(clientData)
-      .subscribe((response: any) => {
-        if (response.success) {
-          alert('Client added successfully');
-          this.clients.push(clientData);
-        }else {
-          alert('Failed to add client');
-        }
-      });
+        .subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              alert('Client added successfully');
+              this.clients.push(clientData);
+            } else {
+              alert('Failed to add client');
+            }
+          },
+          error: (error) => {
+            console.error('Error adding client:', error);
+            alert(error?.error?.message || 'Ocurrió un error inesperado');
+          }
+        });
       this.clientForm.reset();
       this.formSubmitted = false;
     }
@@ -161,13 +179,19 @@ export class ClientComponent {
 
   deleteClient(client: Client) {
     this.clientService.deleteClient(client.identificationNumber)
-    .subscribe((response: any) => {
-      if (response.success) {
-        alert('Client deleted successfully');
-        this.clients = this.clients.filter(c => c.identificationNumber !== client.identificationNumber);
-      } else {
-        alert('Failed to delete client');
-      }
-    });
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            alert('Client deleted successfully');
+            this.clients = this.clients.filter(c => c.identificationNumber !== client.identificationNumber);
+          } else {
+            alert('Failed to delete client');
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting client:', error);
+          alert(error?.error?.message || 'Ocurrió un error inesperado');
+        }
+      });
   }
 }

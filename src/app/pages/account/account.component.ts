@@ -33,21 +33,27 @@ export class AccountComponent {
 
   ngOnInit() {
     this.accountService.getAccounts()
-      .subscribe((response: any) => {
-        if (!response.data) {
-          alert('No data received from the service');
-          return;
-        }
-        if (!Array.isArray(response.data)) {
-          console.error('Expected an array of accounts, but received:', response.data);
-          return;
-        }
-        if (response.data.length === 0) {
-          alert('No accounts found');
-          return;
-        }
+      .subscribe({
+        next: (response: any) => {
+          if (!response.data) {
+            alert('No data received from the service');
+            return;
+          }
+          if (!Array.isArray(response.data)) {
+            console.error('Expected an array of accounts, but received:', response.data);
+            return;
+          }
+          if (response.data.length === 0) {
+            alert('No accounts found');
+            return;
+          }
 
-        this.accounts = response.data;
+          this.accounts = response.data;
+        },
+        error: (error) => {
+          console.error('Error fetching accounts:', error);
+          alert(error?.error?.message || 'Ocurrió un error inesperado');
+        }
       });
   }
 
@@ -81,7 +87,7 @@ export class AccountComponent {
     return this.accounts.filter(c =>
       c.accountNumber.toLowerCase().includes(term) ||
       c.accountType.toLowerCase().includes(term) ||
-      c.client.identificationNumber.includes(term) 
+      c.client.identificationNumber.includes(term)
     );
   }
 
@@ -95,15 +101,21 @@ export class AccountComponent {
     this.closeModal();
     if (this.isEditMode && this.selectedAccount) {
       this.accountService.updateAccount(accountData)
-        .subscribe((response: any) => {
-          if (response.success) {
-            alert('Account updated:');
-            const index = this.accounts.findIndex(c => c.accountNumber === accountData.accountNumber);
-            if (index !== -1) {
-              this.accounts[index] = accountData;
-            } else {
-              alert('Failed to update account');
+        .subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              alert('Account updated:');
+              const index = this.accounts.findIndex(c => c.accountNumber === accountData.accountNumber);
+              if (index !== -1) {
+                this.accounts[index] = accountData;
+              } else {
+                alert('Failed to update account');
+              }
             }
+          },
+          error: (error) => {
+            console.error('Error updating account:', error);
+            alert(error?.error?.message || 'Ocurrió un error inesperado');
           }
         });
       this.isEditMode = false;
@@ -113,12 +125,18 @@ export class AccountComponent {
     }
     else {
       this.accountService.addAccount(accountData)
-        .subscribe((response: any) => {
-          if (response.success) {
-            alert('Account added successfully');
-            this.accounts.push(accountData);
-          } else {
-            alert('Failed to add account');
+        .subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              alert('Account added successfully');
+              this.accounts.push(accountData);
+            } else {
+              alert('Failed to add account');
+            }
+          },
+          error: (error) => {
+            console.error('Error adding account:', error);
+            alert(error?.error?.message || 'Ocurrió un error inesperado');
           }
         });
       this.accountForm.reset();
@@ -143,12 +161,18 @@ export class AccountComponent {
 
   deleteAccount(account: Account) {
     this.accountService.deleteAccount(account.accountNumber)
-      .subscribe((response: any) => {
-        if (response.success) {
-          alert('Account deleted successfully');
-          this.accounts = this.accounts.filter(c => c.accountNumber !== account.accountNumber);
-        } else {
-          alert('Failed to delete account');
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            alert('Account deleted successfully');
+            this.accounts = this.accounts.filter(c => c.accountNumber !== account.accountNumber);
+          } else {
+            alert('Failed to delete account');
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting account:', error);
+          alert(error?.error?.message || 'Ocurrió un error inesperado');
         }
       });
   }

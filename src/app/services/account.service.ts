@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,7 @@ export class AccountService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error fetching accounts:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -27,8 +26,7 @@ export class AccountService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error fetching account:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -38,8 +36,7 @@ export class AccountService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error adding account:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -49,8 +46,7 @@ export class AccountService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error updating account:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -60,8 +56,7 @@ export class AccountService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error deleting account:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }

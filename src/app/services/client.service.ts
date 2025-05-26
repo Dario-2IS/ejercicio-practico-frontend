@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { Client } from './interfaces/client.interface';
 
 @Injectable({
@@ -17,8 +17,7 @@ export class ClientService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error fetching clients:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -28,8 +27,7 @@ export class ClientService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error fetching client:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -39,8 +37,7 @@ export class ClientService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error adding client:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -50,8 +47,7 @@ export class ClientService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error updating client:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }
@@ -61,8 +57,7 @@ export class ClientService {
     .pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error deleting client:', error);
-        return of(null);
+        return throwError(() => error);
       })
     );
   }

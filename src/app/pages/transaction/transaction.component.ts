@@ -19,7 +19,7 @@ export class TransactionComponent {
   formSubmitted: boolean = false;
   transactionTypes: any[] = [{ value: 'DEPOSIT', label: 'DEPOSITO' }, { value: 'WITHDRAWAL', label: 'RETIRO' }];
 
-  constructor(private router:Router, private transactionService: TransactionService, private fb: FormBuilder) {
+  constructor(private router: Router, private transactionService: TransactionService, private fb: FormBuilder) {
     this.transactionForm = this.fb.group({
       transactionType: ['DEPOSIT', [Validators.required, Validators.minLength(3)]],
       amount: [0, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]+(\\.[0-9]{1,2})?$')]],
@@ -29,8 +29,9 @@ export class TransactionComponent {
 
   ngOnInit() {
     this.transactionService.getTransactions()
-      .subscribe((response: any) => {
-        if (!response.data) {
+      .subscribe({
+        next: (response: any) => {
+           if (!response.data) {
           alert('No data received from the service');
           return;
         }
@@ -44,6 +45,11 @@ export class TransactionComponent {
         }
 
         this.transactions = response.data;
+        },
+        error: (error) => {
+          console.error('Error fetching transactions:', error);
+          alert(error?.error?.message || 'Ocurrió un error inesperado');
+        }
       });
   }
 
@@ -90,12 +96,18 @@ export class TransactionComponent {
     this.formSubmitted = true;
     this.closeModal();
     this.transactionService.addTransaction(accountData)
-      .subscribe((response: any) => {
-        if (response.success) {
-          alert('Transaction added successfully');
-          this.transactions.push(accountData);
-        } else {
-          alert('Error adding transaction');
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            alert('Transaction added successfully');
+            this.transactions.push(accountData);
+          } else {
+            alert('Error adding transaction');
+          }
+        },
+        error: (error) => {
+          console.error('Error al agregar transacción:', error);
+          alert(error?.error?.message || 'Ocurrió un error inesperado');
         }
       });
     this.transactionForm.reset();
@@ -105,12 +117,18 @@ export class TransactionComponent {
 
   deleteTransaction(transaction: Transaction) {
     this.transactionService.deleteTransaction(transaction.id)
-      .subscribe((response: any) => {
-        if (response.success) {
-          alert('Transaction deleted successfully');
-          this.transactions = this.transactions.filter(t => t.id !== transaction.id);
-        } else {
-          alert('Error deleting transaction');
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            alert('Transaction deleted successfully');
+            this.transactions = this.transactions.filter(t => t.id !== transaction.id);
+          } else {
+            alert('Error deleting transaction');
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting transaction:', error);
+          alert(error?.error?.message || 'Ocurrió un error inesperado');
         }
       });
   }
