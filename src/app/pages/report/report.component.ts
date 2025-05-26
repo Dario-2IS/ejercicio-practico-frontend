@@ -16,8 +16,13 @@ export class ReportComponent {
   startDate: string = '';
   endDate: string = '';
   accounts: Account[] = [];
+  minDate: string = '2025-05-22';
+  maxDate: string = '';
+  today = new Date(); 
 
-  constructor(private reportService: ReportService, private accountService: AccountService) { }
+  constructor(private reportService: ReportService, private accountService: AccountService) {
+    this.maxDate = this.today.toISOString().split('T')[0]; // formato 'YYYY-MM-DD'
+  }
 
   ngOnInit() {
     this.accountService.getAccounts()
