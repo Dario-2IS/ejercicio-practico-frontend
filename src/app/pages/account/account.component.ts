@@ -17,7 +17,6 @@ export class AccountComponent {
   accountForm: FormGroup;
   formSubmitted: boolean = false;
   accountTypes: string[] = ['Savings', 'Checking'];
-  currencies: string[] = ['USD', 'EUR'];
   isEditMode: boolean = false;
   selectedAccount: string = '';
 
@@ -27,7 +26,6 @@ export class AccountComponent {
       accountType: ['Savings', [Validators.required, Validators.minLength(3)]],
       clientIdentificationNumber: ['', [Validators.required, Validators.minLength(10)]],
       balance: [0, [Validators.required, Validators.min(0)]],
-      currency: ['USD', [Validators.required]],
       state: [true, [Validators.required]]
     });
   }

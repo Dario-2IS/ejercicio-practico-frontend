@@ -15,7 +15,6 @@
                     <th>Monto</th>
                     <th>Saldo Inicial</th>
                     <th>Saldo Final</th>
-                    <th>Moneda</th>
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th># Cuenta</th>
@@ -25,11 +24,10 @@
             <tbody>
                 <tr *ngFor="let tx of filteredTransactions">
                     <td>{{ tx.id }}</td>
-                    <td>{{ tx.transactionType }}</td>
+                    <td>{{ tx.transactionType == 'DEPOSIT' ? '+' : '-' }}</td>
                     <td>{{ tx.amount | currency: 'USD' }}</td>
                     <td>{{ tx.initialBalance | currency: 'USD' }}</td>
                     <td>{{ tx.finalBalance | currency: 'USD' }}</td>
-                    <td>{{ tx.currency }}</td>
                     <td>{{ tx.date }}</td>
                     <td>{{ tx.time }}</td>
                     <td>{{ tx.account.accountNumber }}</td>
@@ -64,12 +62,6 @@
                         <small class="text-red" *ngIf="amount?.errors?.['required']">Mount is required.</small>
                         <small class="text-red" *ngIf="amount?.errors?.['minlength']">Ivalid mount.</small>
                     </div>
-                </label>
-
-                <label>Moneda
-                    <select formControlName="currency">
-                        <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
-                    </select>
                 </label>
 
                 <label># Cuenta

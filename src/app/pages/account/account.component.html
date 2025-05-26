@@ -13,7 +13,6 @@
                     <th># Cuenta</th>
                     <th>Tipo</th>
                     <th>Saldo</th>
-                    <th>Moneda</th>
                     <th>Estado</th>
                     <th>Identificacion Cliente</th>
                     <th>Acciones</th>
@@ -23,8 +22,7 @@
                 <tr *ngFor="let account of filteredAccounts">
                     <td>{{ account.accountNumber }}</td>
                     <td>{{ account.accountType }}</td>
-                    <td>{{ account.balance }}</td>
-                    <td>{{ account.currency }}</td>
+                    <td>{{ account.balance | currency: 'USD'}}</td>
                     <td>{{ account.state ? 'Activo' : 'Inactivo' }}</td>
                     <td>{{ account.client.identificationNumber }}</td>
                     <td>
@@ -67,12 +65,6 @@
                         <small class="text-red" *ngIf="balance?.errors?.['required']">LastName is required.</small>
                         <small class="text-red" *ngIf="balance?.errors?.['minlength']">Minimum entry 6 characters.</small>
                     </div>
-                </label>
-
-                <label>Moneda
-                    <select formControlName="currency">
-                        <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
-                    </select>
                 </label>
 
                 <label>Estado

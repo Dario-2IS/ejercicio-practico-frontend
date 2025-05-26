@@ -18,13 +18,11 @@ export class TransactionComponent {
   transactionForm: FormGroup;
   formSubmitted: boolean = false;
   transactionTypes: string[] = ['DEPOSIT', 'WITHDRAWAL'];
-  currencies: string[] = ['USD', 'EUR'];
 
   constructor(private transactionService: TransactionService, private fb: FormBuilder) {
     this.transactionForm = this.fb.group({
       transactionType: ['DEPOSIT', [Validators.required, Validators.minLength(3)]],
       amount: [0, [Validators.required, Validators.min(0)]],
-      currency: ['USD', [Validators.required]],
       accountNumber: [null, [Validators.required]]
     });
   }
