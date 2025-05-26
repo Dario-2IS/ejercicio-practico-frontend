@@ -22,10 +22,10 @@ export class AccountComponent {
 
   constructor(private accountService: AccountService, private fb: FormBuilder) {
     this.accountForm = this.fb.group({
-      accountNumber: ['', [Validators.required, Validators.minLength(10)]],
+      accountNumber: ['', [Validators.required, Validators.minLength(10), Validators.pattern('^[a-zA-Z0-9]+$')]],
       accountType: ['Savings', [Validators.required, Validators.minLength(3)]],
       clientIdentificationNumber: ['', [Validators.required, Validators.minLength(10)]],
-      balance: [0, [Validators.required, Validators.min(0)]],
+      balance: [0, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]+(\\.[0-9]{1,2})?$')]],
       state: [true, [Validators.required]]
     });
   }

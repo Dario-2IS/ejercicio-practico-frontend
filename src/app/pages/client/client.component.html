@@ -57,24 +57,25 @@
                 <label>Identificación
                     <input formControlName="identificationNumber" />
                     <div *ngIf="identificationNumber?.invalid && (identificationNumber?.touched || identificationNumber?.dirty || formSubmitted)" class="error">
-                        <small class="text-red" *ngIf="identificationNumber?.errors?.['required']">ID is required.</small>
-                        <small class="text-red" *ngIf="identificationNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                        <small class="text-red" *ngIf="identificationNumber?.errors?.['required']">Se requiere una Identificacion.</small>
                     </div>
                 </label>
 
                 <label>Nombre
                     <input formControlName="firstName" />
                     <div *ngIf="firstName?.invalid && (firstName?.touched || firstName?.dirty || formSubmitted)" class="error">
-                        <small class="text-red" *ngIf="firstName?.errors?.['required']">Name is required.</small>
-                        <small class="text-red" *ngIf="firstName?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                        <small class="text-red" *ngIf="firstName?.errors?.['required']">Se requiere un nombre.</small>
+                        <small class="text-red" *ngIf="firstName?.errors?.['minlength']">Minimo 3 caracteres.</small>
+                        <small class="text-red" *ngIf="firstName?.errors?.['pattern']">Formato de nombre invalido.</small>
                     </div>
                 </label>
 
                 <label>Apellido
                     <input formControlName="lastName" />
                     <div *ngIf="lastName?.invalid && (lastName?.touched || lastName?.dirty || formSubmitted)" class="error">
-                        <small class="text-red" *ngIf="lastName?.errors?.['required']">LastName is required.</small>
-                        <small class="text-red" *ngIf="lastName?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                        <small class="text-red" *ngIf="lastName?.errors?.['required']">Se requiere un apellido.</small>
+                        <small class="text-red" *ngIf="lastName?.errors?.['minlength']">Minimo 3 caracteres.</small>
+                        <small class="text-red" *ngIf="lastName?.errors?.['pattern']">Formato de apellido invalido.</small>
                     </div>
                 </label>
 
@@ -86,14 +87,14 @@
                 </label>
 
                 <label>Edad
-                    <input type="number" formControlName="age" />
+                    <input type="number" min="0" formControlName="age" />
                 </label>
 
                 <label>Teléfono
                     <input formControlName="phoneNumber" />
                     <div *ngIf="phoneNumber?.invalid && (phoneNumber?.touched || phoneNumber?.dirty || formSubmitted)" class="error">
-                        <small class="text-red" *ngIf="phoneNumber?.errors?.['required']">Phone is required.</small>
-                        <small class="text-red" *ngIf="phoneNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                        <small class="text-red" *ngIf="phoneNumber?.errors?.['required']">Se requiere un telefono.</small>
+                        <small class="text-red" *ngIf="phoneNumber?.errors?.['pattern']">Formato invalido.</small>
                     </div>
                 </label>
 
@@ -101,7 +102,6 @@
                     <input formControlName="address" />
                     <div *ngIf="address?.invalid && (address?.touched || address?.dirty || formSubmitted)" class="error">
                         <small class="text-red" *ngIf="address?.errors?.['required']">Address is required.</small>
-                        <small class="text-red" *ngIf="address?.errors?.['minlength']">Minimum entry 6 characters.</small>
                     </div>
                 </label>
 
@@ -109,7 +109,7 @@
                     <input type="password" formControlName="password" />
                     <div *ngIf="password?.invalid && (password?.touched || password?.dirty || formSubmitted)" class="error">
                         <small class="text-red" *ngIf="password?.errors?.['required']">Password is required.</small>
-                        <small class="text-red" *ngIf="password?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                        <small class="text-red" *ngIf="password?.errors?.['minlength']">La contraseña debe tener minimo 6 caracteres</small>
                     </div>
                 </label>
 

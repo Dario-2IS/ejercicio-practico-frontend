@@ -22,14 +22,14 @@ export class ClientComponent {
 
   constructor(private clientService: ClientService, private fb: FormBuilder) {
     this.clientForm = this.fb.group({
-      identificationNumber: ['', [Validators.required, Validators.minLength(10)]],
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
+      identificationNumber: ['', [Validators.required]],
+      firstName: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z]+$')]],
+      lastName: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z]+$')]],
       gender: [true, [Validators.required]],
       age: [null, [Validators.required, Validators.min(0)]],
-      phoneNumber: ['', [Validators.required]],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       address: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       state: [true, [Validators.required]]
     });
   }

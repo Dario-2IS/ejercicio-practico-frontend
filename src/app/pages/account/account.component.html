@@ -48,8 +48,9 @@
                 <label>Numero de Cuenta
                     <input formControlName="accountNumber" />
                     <div *ngIf="accountNumber?.invalid && (accountNumber?.touched || accountNumber?.dirty || formSubmitted)" class="error">
-                        <small class="text-red" *ngIf="accountNumber?.errors?.['required']">Account Number is required.</small>
-                        <small class="text-red" *ngIf="accountNumber?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                        <small class="text-red" *ngIf="accountNumber?.errors?.['required']">Numero de cuenta requerido.</small>
+                        <small class="text-red" *ngIf="accountNumber?.errors?.['minlength']">Ingrese minimo 10 caracteres.</small>
+                        <small class="text-red" *ngIf="accountNumber?.errors?.['pattern']">Formato de cuenta invalido.</small>
                     </div>
                 </label>
 
@@ -62,8 +63,9 @@
                 <label>Saldo
                     <input formControlName="balance" />
                     <div *ngIf="balance?.invalid && (balance?.touched || balance?.dirty || formSubmitted)" class="error">
-                        <small class="text-red" *ngIf="balance?.errors?.['required']">LastName is required.</small>
-                        <small class="text-red" *ngIf="balance?.errors?.['minlength']">Minimum entry 6 characters.</small>
+                        <small class="text-red" *ngIf="balance?.errors?.['required']">Ingrese un monto.</small>
+                        <small class="text-red" *ngIf="balance?.errors?.['min']">El monto debe ser superior a 1 USD.</small>
+                        <small class="text-red" *ngIf="balance?.errors?.['pattern']">Monto incorrecto.</small>
                     </div>
                 </label>
 

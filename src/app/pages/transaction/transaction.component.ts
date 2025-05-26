@@ -22,8 +22,8 @@ export class TransactionComponent {
   constructor(private transactionService: TransactionService, private fb: FormBuilder) {
     this.transactionForm = this.fb.group({
       transactionType: ['DEPOSIT', [Validators.required, Validators.minLength(3)]],
-      amount: [0, [Validators.required, Validators.min(0)]],
-      accountNumber: [null, [Validators.required]]
+      amount: [0, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]+(\\.[0-9]{1,2})?$')]],
+      accountNumber: [null, [Validators.required, Validators.minLength(10), Validators.pattern('^[a-zA-Z0-9]+$')]]
     });
   }
 
