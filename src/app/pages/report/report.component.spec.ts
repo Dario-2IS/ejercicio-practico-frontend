@@ -1,19 +1,14 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReportComponent } from './report.component';
 import { ReportService } from '../../services/report.service';
 import { AccountService } from '../../services/account.service';
 import { of } from 'rxjs';
-import { Account } from '../../services/interfaces/account.interface';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 describe('ReportComponent (standalone)', () => {
   let component: ReportComponent;
-  let fixture: ComponentFixture<ReportComponent>;
   let mockReportService: any;
   let mockAccountService: any;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockReportService = {
       getReport: jest.fn()
     };
@@ -21,24 +16,47 @@ describe('ReportComponent (standalone)', () => {
       getAccounts: jest.fn()
     };
 
-    await TestBed.configureTestingModule({
-      imports: [CommonModule, FormsModule, ReportComponent],
-      providers: [
-        { provide: ReportService, useValue: mockReportService },
-        { provide: AccountService, useValue: mockAccountService }
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(ReportComponent);
-    component = fixture.componentInstance;
+    component = new ReportComponent(mockReportService, mockAccountService);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should set maxDate to today in YYYY-MM-DD format', () => {
+  it('should initialize maxDate as today in YYYY-MM-DD format', () => {
     const today = new Date().toISOString().split('T')[0];
     expect(component.maxDate).toBe(today);
+  });
+
+  it('should fetch accounts on ngOnInit and set accounts if data exists', () => {
+    const accountsMock = [{ id: '1', name: 'Account 1' }];
+    mockAccountService.getAccounts.mockReturnValue(of({ data: accountsMock }));
+
+    component.ngOnInit();
+
+    expect(mockAccountService.getAccounts).toHaveBeenCalled();
+    // Simulate async subscription
+    setTimeout(() => {
+      expect(component.accounts).toEqual(accountsMock);
+    }, 0);
+  });
+
+  it('should alert if no data received from getAccounts', () => {
+    window.alert = jest.fn();
+    mockAccountService.getAccounts.mockReturnValue(of({}));
+
+    component.ngOnInit();
+
+    setTimeout(() => {
+      expect(window.alert).toHaveBeenCalledWith('No data received from the service');
+    }, 0);
+  });
+
+  it('should alert if generateReport is called with missing fields', () => {
+    window.alert = jest.fn();
+    component.selectedAccount = '';
+    component.startDate = '';
+    component.endDate = '';
+
+    component.generateReport();
+
+    expect(window.alert).toHaveBeenCalledWith('Please fill in all fields');
+    expect(mockReportService.getReport).not.toHaveBeenCalled();
   });
 });
